@@ -52,3 +52,14 @@ exports.sendActivationEmail = (email, activation_key) => {
         url
     )
 }
+
+const validProperties = ['email', 'username']
+
+exports.checkExistsQuery = controller(({ query: { property, value } }, res, next) => {
+    if (!property || !value || !validProperties.find(v => v === property)) 
+        return res.status(status.BAD_REQUEST).json(errorResponse(
+            'Parâmetros inválidos!',
+            'Os parâmetros informados para consulta são inválidos.'
+        ))
+    return next()
+})
