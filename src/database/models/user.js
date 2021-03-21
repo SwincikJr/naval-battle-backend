@@ -3,13 +3,11 @@ module.exports = {
     fields: {
         email: { 
             type: String, 
-            required: true,
-            unique: true
+            required: true
         },
         username: {
             type: String,
-            required: true,
-            unique: true
+            required: true
         },
         password: {
             type: String,

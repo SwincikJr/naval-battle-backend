@@ -6,11 +6,17 @@ const { status } = require('../../presenters/http')
 const { errorResponse } = require('../../presenters/handle')
 const { hash } = require('../../presenters/encryptation')
 const { sendMailTemplate } = require('../../presenters/email')
+const { findUserByEmailAndActivationKey } = require('../../database/repository/user')
 
 exports.validateUserBody = [
     body('email').isEmail(),
     body('username').trim().isString().notEmpty(),
     body('password').trim().isString().notEmpty()
+]
+
+exports.validateActivateBody = [
+    body('email').isEmail(),
+    body('activation_key').trim().isString().notEmpty()
 ]
 
 exports.generateActivationKey = controller((req, _, next) => {
@@ -61,5 +67,20 @@ exports.checkExistsQuery = controller(({ query: { property, value } }, res, next
             'Parâmetros inválidos!',
             'Os parâmetros informados para consulta são inválidos.'
         ))
+    return next()
+})
+
+exports.checkUser = controller(async (req, res, next) => {
+    const { email, activation_key } = req.body
+    const user = await findUserByEmailAndActivationKey(email, activation_key)
+    if (!user) return res.status(status.BAD_REQUEST).json(errorResponse(
+        'Usuário não localizado!',
+        'Não foi possível localizar o usuário para a confirmação de e-mail.'
+    ))
+    if (user.activated) return res.status(status.BAD_REQUEST).json(errorResponse(
+        'Já confirmado!',
+        'O endereço de e-mail já se encontra confirmado.'
+    ))
+    req.body._id = user._id
     return next()
 })

@@ -1,4 +1,4 @@
-const { create, findOne } = require('../index')
+const { create, findOne, update } = require('../index')
 
 exports.createUser = ({ email, username, password, activation_key }) => {
     return create('User', { email, username, password, activation_key })
@@ -17,3 +17,9 @@ exports.findUserByEmailOrUsername = login => findOne('User', {
     ],
     deleted: false
 })
+
+exports.findUserByEmailAndActivationKey = (email, activation_key) => {
+    return findOne('User', { email, activation_key, deleted: false })
+}
+
+exports.activateUser = _id => update('User', { _id }, { activated: true })
