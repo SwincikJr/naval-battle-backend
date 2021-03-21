@@ -5,6 +5,7 @@ const { validateErrorBody } = require('../../presenters/validator')
 const { findUserByEmailOrUsername } = require('../../database/repository/user')
 const { compare } = require('../../presenters/encryptation')
 const { errorResponse } = require('../../presenters/handle')
+const { controller } = require('../../presenters/controller')
 
 exports.path = '/authenticate'
 exports.method = 'post'
@@ -14,10 +15,10 @@ exports.middleware = [
 ]
 exports.authenticate = false
 
-exports.handler = async ({ body: { login, password } }, res) => {
+exports.handler = controller(async ({ body: { login, password } }, res) => {
     const user = await findUserByEmailOrUsername(login)
     if (!user || !compare(password, user.password))
-        return res.status(status.BAD_REQUEST).json(errorResponse(
+        return res.status(status.UNAUTHORIZED).json(errorResponse(
             'Falha no login!',
             'Login/senha incorreto.'
         ))
@@ -27,4 +28,4 @@ exports.handler = async ({ body: { login, password } }, res) => {
             'O endereço de e-mail ainda não foi confirmado.'
         ))
     return res.status(status.OK).json({ token: generateToken({ _id: user._id }) })
-}
+})
