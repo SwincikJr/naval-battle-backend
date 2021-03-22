@@ -23,3 +23,5 @@ exports.findUserByEmailAndActivationKey = (email, activation_key) => {
 }
 
 exports.activateUser = _id => update('User', { _id }, { activated: true })
+
+exports.setRecovering = (_id, activation_key) => update('User', { _id }, { recovering: true, activation_key })

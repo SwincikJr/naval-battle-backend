@@ -6,7 +6,7 @@ const { status } = require('../../presenters/http')
 const { errorResponse } = require('../../presenters/handle')
 const { hash } = require('../../presenters/encryptation')
 const { sendMailTemplate } = require('../../presenters/email')
-const { findUserByEmailAndActivationKey } = require('../../database/repository/user')
+const { findUserByEmailAndActivationKey, findUserByEmailOrUsername } = require('../../database/repository/user')
 
 exports.validateUserBody = [
     body('email').isEmail(),
@@ -17,6 +17,10 @@ exports.validateUserBody = [
 exports.validateActivateBody = [
     body('email').isEmail(),
     body('activation_key').trim().isString().notEmpty()
+]
+
+exports.validateRecoveryBody = [
+    body('login').trim().isString().notEmpty()
 ]
 
 exports.generateActivationKey = controller((req, _, next) => {
@@ -84,3 +88,26 @@ exports.checkUser = controller(async (req, res, next) => {
     req.body._id = user._id
     return next()
 })
+
+exports.checkLogin = controller(async (req, res, next) => {
+    const user = await findUserByEmailOrUsername(req.body.login)
+    if (!user) return res.status(status.BAD_REQUEST).json(errorResponse(
+        'Usuário não encontrado!',
+        'Nenhum usuáio foi encontrado com o e-mail ou nickname fornecido.'
+    ))
+    req.body._id = user._id
+    req.body.email = user.email
+    return next()
+})
+
+exports.sendRecoveryMail = (email, activation_key) => {
+    const { BASE_URL_FRONT } = process.env
+    const url = `${BASE_URL_FRONT}/password/activate?e=${email}&k=${activation_key}`
+    return sendMailTemplate(
+        email, 
+        'Artemísia: Recuperação de Senha', 
+        'html',
+        'recovery',
+        url
+    )
+}

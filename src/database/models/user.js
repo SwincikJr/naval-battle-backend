@@ -21,6 +21,10 @@ module.exports = {
             type: Boolean,
             default: false
         },
+        recovering: {
+            type: Boolean,
+            default: false
+        },
         deleted: {
             type: Boolean,
             default: false
