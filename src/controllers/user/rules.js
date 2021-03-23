@@ -93,7 +93,7 @@ exports.checkLogin = controller(async (req, res, next) => {
     const user = await findUserByEmailOrUsername(req.body.login)
     if (!user) return res.status(status.BAD_REQUEST).json(errorResponse(
         'Usuário não encontrado!',
-        'Nenhum usuáio foi encontrado com o e-mail ou nickname fornecido.'
+        'Nenhum usuário foi encontrado com o e-mail ou nickname fornecido.'
     ))
     req.body._id = user._id
     req.body.email = user.email
