@@ -23,6 +23,13 @@ exports.validateRecoveryBody = [
     body('login').trim().isString().notEmpty()
 ]
 
+exports.validateChangeBody = [
+    body('email').trim().isString().notEmpty(),
+    body('activation_key').trim().isString().notEmpty(),
+    body('password').trim().isString().notEmpty(),
+    body('rePassword').trim().isString().notEmpty()
+]
+
 exports.generateActivationKey = controller((req, _, next) => {
     req.body.activation_key = (new TokenGenerator(256, TokenGenerator.BASE62)).generate();
     return next()
@@ -43,6 +50,25 @@ exports.checkUsername = controller(async ({ body: { username } }, res, next) => 
         'Nome de usuário em uso!',
         'O nome de usuário informado já se encontra em uso.'
     ))
+    return next()
+})
+
+exports.checkRecoveryPassword = controller(async({body:{email,activation_key, password,rePassword}},res, next)=>{
+    if(password != rePassword)return res.status(status.BAD_REQUEST).json(errorResponse(
+        'Senhas não correspondem!',
+        'As senhas informadas não correspondem.'
+    ))
+    const user = await findUserByEmailAndActivationKey(email,activation_key)
+    if (!user)return res.status(status.BAD_REQUEST).json(errorResponse(
+        'E-mail não cadastrado!',
+        'O endereço de e-mail utilizado não está vinculado a nenhuma conta.'
+    ))
+    if (!user.recovering)return res.status(status.BAD_REQUEST).json(errorResponse(
+        'Solicitação não encontrada',
+        'Solicitação de recuperação de senha não encontrada para a referida conta.'
+    ))
+
+    req.body._id = user._id
     return next()
 })
 
