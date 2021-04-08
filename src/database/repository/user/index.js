@@ -18,12 +18,14 @@ exports.findUserByEmailOrUsername = login => findOne('User', {
     deleted: false
 })
 
-exports.findUserByEmailAndActivationKey = (email, activation_key) => {
-    return findOne('User', { email, activation_key, deleted: false })
-}
+exports.findUserByEmailAndActivationKey = (email, activation_key) => findOne('User', { 
+        activation_key, email , deleted:false
+})
 
 exports.activateUser = _id => update('User', { _id }, { activated: true })
 
 exports.setRecovering = (_id, activation_key) => update('User', { _id }, { recovering: true, activation_key })
 
-exports.findUserAndUpdatePassword = (_id, password) => update('User', { _id }, { recovering: true, password })
+exports.findUserAndUpdatePassword = (_id, password) => update('User', { _id }, { recovering: false, password})
+
+exports.findUserAndDelete = _id => update('User', { _id }, { deleted: true })

@@ -30,6 +30,10 @@ exports.validateChangeBody = [
     body('rePassword').trim().isString().notEmpty()
 ]
 
+exports.validateTokenBody = [
+    body('token').trim().isString().notEmpty()
+]
+
 exports.generateActivationKey = controller((req, _, next) => {
     req.body.activation_key = (new TokenGenerator(256, TokenGenerator.BASE62)).generate();
     return next()
@@ -60,16 +64,16 @@ exports.checkRecoveryPassword = controller(async({body:{email,activation_key, pa
     ))
     const user = await findUserByEmailAndActivationKey(email,activation_key)
     if (!user)return res.status(status.BAD_REQUEST).json(errorResponse(
-        'E-mail não cadastrado!',
-        'O endereço de e-mail utilizado não está vinculado a nenhuma conta.'
+        'E-mail ou token inválido!',
+        'O endereço de e-mail ou token utilizado não está vinculado a nenhuma conta'
     ))
     if (!user.recovering)return res.status(status.BAD_REQUEST).json(errorResponse(
         'Solicitação não encontrada',
         'Solicitação de recuperação de senha não encontrada para a referida conta.'
     ))
-
-    req.body._id = user._id
+    body._id = user._id
     return next()
+    
 })
 
 exports.encryptPassword = controller((req, _, next) => {
