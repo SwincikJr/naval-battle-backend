@@ -57,7 +57,8 @@ exports.checkUsername = controller(async ({ body: { username } }, res, next) => 
     return next()
 })
 
-exports.checkRecoveryPassword = controller(async({body:{email,activation_key, password,rePassword}},res, next)=>{
+exports.checkRecoveryPassword = controller(async(req,res, next)=>{
+    const {email,activation_key, password,rePassword} = req.body
     if(password != rePassword)return res.status(status.BAD_REQUEST).json(errorResponse(
         'Senhas não correspondem!',
         'As senhas informadas não correspondem.'
@@ -71,7 +72,8 @@ exports.checkRecoveryPassword = controller(async({body:{email,activation_key, pa
         'Solicitação não encontrada',
         'Solicitação de recuperação de senha não encontrada para a referida conta.'
     ))
-    body._id = user._id
+    req.body._id = user._id
+    
     return next()
     
 })

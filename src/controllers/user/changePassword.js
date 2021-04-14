@@ -6,7 +6,7 @@ const { validateChangeBody,
         encryptPassword
      } = require("./rules")
 const { validateErrorBody } = require("../../presenters/validator")
-const {findUserAndUpdatePassword, findUserByQuery} = require("../../database/repository/user")
+const {updatePassword, findUserByQuery} = require("../../database/repository/user")
 
 exports.path = '/change/password'
 exports.method = 'put'
@@ -19,7 +19,7 @@ exports.middleware = [
 exports.authenticate = false
 
 exports.handler = controller(async ({ body: {_id, password} }, res) => {
-    await findUserAndUpdatePassword(_id, password)
+    await updatePassword(_id, password)
     const updatedUser = await findUserByQuery(_id)
     if(updatedUser.recovering)return res.status(status.BAD_REQUEST).json(errorResponse(
         'Falha ao autalizar a senha',
