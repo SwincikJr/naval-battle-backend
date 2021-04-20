@@ -30,10 +30,6 @@ exports.validateChangeBody = [
     body('rePassword').trim().isString().notEmpty()
 ]
 
-exports.validateTokenBody = [
-    body('token').trim().isString().notEmpty()
-]
-
 exports.generateActivationKey = controller((req, _, next) => {
     req.body.activation_key = (new TokenGenerator(256, TokenGenerator.BASE62)).generate();
     return next()
@@ -64,7 +60,8 @@ exports.checkRecoveryPassword = controller(async(req,res, next)=>{
         'As senhas informadas não correspondem.'
     ))
     const user = await findUserByEmailAndActivationKey(email,activation_key)
-    if (!user)return res.status(status.BAD_REQUEST).json(errorResponse(
+    console.log(user)
+    if (user == null)return res.status(status.BAD_REQUEST).json(errorResponse(
         'E-mail ou token inválido!',
         'O endereço de e-mail ou token utilizado não está vinculado a nenhuma conta'
     ))

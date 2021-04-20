@@ -1,4 +1,5 @@
-const { create, findOne, update } = require('../index')
+const { verify } = require('crypto')
+const { create, findOne, update, findAll } = require('../index')
 
 exports.createUser = ({ email, username, password, activation_key }) => {
     return create('User', { email, username, password, activation_key })
