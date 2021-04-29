@@ -30,6 +30,14 @@ exports.validateChangeBody = [
     body('rePassword').trim().isString().notEmpty()
 ]
 
+exports.validateUpdateUserBody = [
+    body('password').trim().isEmpty(),
+    body('activation_key').trim().isEmpty(),
+    body('activated').trim().isEmpty(),
+    body('recovering').trim().isEmpty(),
+    body('deleted').trim().isEmpty()
+]
+
 exports.generateActivationKey = controller((req, _, next) => {
     req.body.activation_key = (new TokenGenerator(256, TokenGenerator.BASE62)).generate();
     return next()

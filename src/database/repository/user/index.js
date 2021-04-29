@@ -30,3 +30,5 @@ exports.setRecovering = (_id, activation_key) => update('User', { _id }, { recov
 exports.updatePassword = (_id, password) => update('User', { _id }, { recovering: false, password })
 
 exports.findUserAndDelete = _id => update('User', { _id }, { deleted: true })
+
+exports.updateUserInfo = (_id, body) => update('User', { _id }, body)
