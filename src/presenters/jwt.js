@@ -3,18 +3,21 @@ const { status } = require('./http')
 const { controller } = require('./controller')
 const { findUserByQuery } = require('../database/repository/user')
 
-const { TOKEN_SECRET, TOKEN_EXPIRATION_SEC } = process.env
+const { TOKEN_SECRET } = process.env
 
-const verifyToken = token => {return jwt.verify(token, TOKEN_SECRET)} 
+const verifyToken = token => { 
+    return jwt.verify(token, TOKEN_SECRET) 
+}
 
 exports.validateToken = async (token) => {
-    try{
+    try {
         if (!/^([a-zA-Z0-9_=]+)\.([a-zA-Z0-9_=]+)\.([a-zA-Z0-9_\-\\+\\/=]*)$/i.test(
             token
           )
         ) return false
         return await verifyToken(token)
-    } catch{
+    } catch (error) {
+        console.error(error)
         return false
     }
 }
@@ -35,5 +38,5 @@ exports.validateAuthorization = controller(async (req, res, next) => {
 })
 
 exports.generateToken = object => {
-    return jwt.sign(object, TOKEN_SECRET, { expiresIn: TOKEN_EXPIRATION_SEC })
+    return jwt.sign(object, TOKEN_SECRET)
 }

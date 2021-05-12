@@ -27,5 +27,9 @@ exports.handler = controller(async ({ body: { login, password } }, res) => {
             'E-mail não confirmado.',
             'O endereço de e-mail ainda não foi confirmado.'
         ))
-    return res.status(status.OK).json({ token: generateToken({ _id: user._id }) })
+    return res.status(status.OK).json({ 
+        username: user.username, 
+        email: user.email, 
+        token: generateToken({ _id: user._id }) 
+    })
 })
