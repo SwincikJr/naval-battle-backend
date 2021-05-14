@@ -3,7 +3,7 @@ const { status } = require('../../presenters/http')
 const {findUserAndDelete} = require("../../database/repository/user")
 
 exports.path = '/delete/user'
-exports.method = 'put'
+exports.method = 'delete'
 exports.middleware = []
 exports.authenticate = true
 
