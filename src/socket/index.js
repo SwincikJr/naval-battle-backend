@@ -2,6 +2,7 @@ const socket = require('socket.io')
 const fs = require('fs')
 const path = require('path')
 const { addEvent } = require('../presenters/events')
+const { deleteAllSocketClients } = require('../database/repository/socketClient')
 
 const listProtocols = () => {
   const dir = path.join(__dirname, './events')
@@ -97,6 +98,7 @@ const loadEmitters = (io) => {
 
 exports.listenServerSocket = async (server) => {
   try {
+    await deleteAllSocketClients()
     const io = socket(server)
     listenEvents(io)
     loadEmitters(io)

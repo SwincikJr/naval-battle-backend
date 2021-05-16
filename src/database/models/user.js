@@ -1,3 +1,5 @@
+const { Types } = require('mongoose')
+
 module.exports = {
     name: 'User',
     fields: {
@@ -22,6 +24,22 @@ module.exports = {
             default: false
         },
         recovering: {
+            type: Boolean,
+            default: false
+        },
+        waiting: {
+            type: Boolean,
+            default: false
+        },
+        playing: {
+            type: Boolean,
+            default: false
+        },
+        challenging: {
+            type: Boolean,
+            default: false
+        },
+        challenged: {
             type: Boolean,
             default: false
         },

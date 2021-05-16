@@ -30,6 +30,6 @@ exports.handler = controller(async ({ body: { login, password } }, res) => {
     return res.status(status.OK).json({ 
         username: user.username, 
         email: user.email, 
-        token: generateToken({ _id: user._id }) 
+        token: generateToken({ _id: user._id, username: user.username, email: user.email }) 
     })
 })

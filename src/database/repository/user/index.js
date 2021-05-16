@@ -1,5 +1,5 @@
 const { verify } = require('crypto')
-const { create, findOne, update, findAll } = require('../index')
+const { create, findOne, update, findAll, findOneAndUpdate, findOneAndPopulate, updateMany } = require('../index')
 
 exports.createUser = ({ email, username, password, activation_key }) => {
     return create('User', { email, username, password, activation_key })
@@ -32,3 +32,68 @@ exports.updatePassword = (_id, password) => update('User', { _id }, { recovering
 exports.findUserAndDelete = _id => update('User', { _id }, { deleted: true })
 
 exports.updateUserInfo = (_id, body) => update('User', { _id }, body)
+
+exports.findUserWaiting = _id => {
+    return findOneAndUpdate('User', { 
+        waiting: true, 
+        deleted: false, 
+        _id: { $ne: _id } 
+    }, {
+        waiting: false,
+        playing: true
+    })
+} 
+
+exports.setUserWaiting = _id => update('User', { _id }, { waiting: true })
+
+exports.setUserNotWaiting = _id => update('User', { _id }, { waiting: false })
+
+exports.setUserPlaying = _id => update('User', { _id }, { playing: true })
+
+exports.checkUserInGameOrWaiting = _id => findOne('User', { 
+    _id, 
+    $or: [
+        { playing: true },  
+        { waiting: true },
+        { challenged: true },
+        { challenging: true }
+    ] 
+})
+
+exports.checkUserChallengebleByEmailOrUsername = login => findOneAndUpdate('User', {
+    $or: [
+        { email: login }, 
+        { username: login }
+    ],
+    waiting: false,
+    playing: false,
+    challenged: false,
+    deleted: false
+}, {
+    challenged: true
+})
+
+exports.setUsersForCanceledChallenge = (ChallengerId, ChallengedId) => {
+    return updateMany('User', {
+        $or: [
+            { _id: ChallengerId },
+            { _id: ChallengedId }
+        ]
+    }, {
+        challenging: false,
+        challenged: false
+    })
+}
+
+exports.setUsersPlayingForChallenge = (ChallengerId, ChallengedId) => {
+    return updateMany('User', {
+        $or: [
+            { _id: ChallengerId },
+            { _id: ChallengedId }
+        ]
+    }, {
+        challenging: false,
+        challenged: false,
+        playing: true
+    })
+}
