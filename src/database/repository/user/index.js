@@ -1,5 +1,5 @@
 const { verify } = require('crypto')
-const { create, findOne, update, findAll, findOneAndUpdate, findOneAndPopulate, updateMany } = require('../index')
+const { create, findOne, update, findAll, findOneAndUpdate, findOneAndPopulate, updateMany, remove } = require('../index')
 
 exports.createUser = ({ email, username, password, activation_key }) => {
     return create('User', { email, username, password, activation_key })
@@ -97,3 +97,11 @@ exports.setUsersPlayingForChallenge = (ChallengerId, ChallengedId) => {
         playing: true
     })
 }
+
+exports.createGuest = (username) => {
+    return create('User', {username, guest:true, password:'null',email: 'null', activation_key:'null'})
+}
+
+exports.findGuestAndDelete = _id => remove('User',{_id})
+
+exports.findGuest = username => findOne('User', { username, guest:true })

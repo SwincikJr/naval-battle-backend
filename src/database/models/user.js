@@ -46,6 +46,10 @@ module.exports = {
         deleted: {
             type: Boolean,
             default: false
+        },
+        guest:{
+            type:Boolean,
+            default:false
         }
     }
 }
