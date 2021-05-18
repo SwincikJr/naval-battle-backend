@@ -11,8 +11,9 @@ exports.middleware = [
 ]
 exports.authenticate = true
 
-exports.handler = controller(async ({body}, res) => {
+exports.handler = controller(async ({body, _rt_auth_token}, res) => {
     const vessels = body.vessels
-    const board = await createBoard({vessels})
+    const userId =  _rt_auth_token._id
+    const board = await createBoard({vessels, userId})
     return res.status(status.CREATED).json({ board:board._id })
 })
