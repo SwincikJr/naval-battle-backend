@@ -15,6 +15,10 @@ module.exports = {
             type: String,
             required: true
         },
+        score: {
+            type: Number,
+            default: 0
+        },
         activation_key: {
             type: String,
             required: true

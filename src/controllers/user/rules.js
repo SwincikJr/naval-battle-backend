@@ -38,6 +38,10 @@ exports.validateUpdateUserBody = [
     body('deleted').trim().isEmpty()
 ]
 
+exports.validadeGetScore = [
+    body('_id').trim().notEmpty()
+]
+
 exports.generateActivationKey = controller((req, _, next) => {
     req.body.activation_key = (new TokenGenerator(256, TokenGenerator.BASE62)).generate();
     return next()

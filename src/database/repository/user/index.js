@@ -105,3 +105,5 @@ exports.createGuest = (username) => {
 exports.findGuestAndDelete = _id => remove('User',{_id})
 
 exports.findGuest = username => findOne('User', { username, guest:true })
+
+exports.getUserScore = _id => findOne('User', {_id})
