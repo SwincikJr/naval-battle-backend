@@ -1,5 +1,5 @@
 const { verify } = require('crypto')
-const { create, findOne, update, findAll, findOneAndUpdate, findOneAndPopulate, updateMany, remove } = require('../index')
+const { create, findOne, update, findAll, findOneAndUpdate, findOneAndPopulate, updateMany, remove, findAllSortLimit } = require('../index')
 
 exports.createUser = ({ email, username, password, activation_key }) => {
     return create('User', { email, username, password, activation_key })
@@ -105,3 +105,8 @@ exports.createGuest = (username) => {
 exports.findGuestAndDelete = _id => remove('User',{_id})
 
 exports.findGuest = username => findOne('User', { username, guest:true })
+
+exports.findByScore = () => findAllSortLimit('User',{},{username:1 ,score:1, _id:0},{score:-1},3)
+
+exports.findOneScore = (_id) => findAllSortLimit('User',{_id},{username:1 ,score:1, _id:0},{},1)
+
