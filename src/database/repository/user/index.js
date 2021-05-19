@@ -110,3 +110,4 @@ exports.findByScore = () => findAllSortLimit('User',{},{username:1 ,score:1, _id
 
 exports.findOneScore = (_id) => findAllSortLimit('User',{_id},{username:1 ,score:1, _id:0},{},1)
 
+exports.getUserScore = _id => findOne('User', {_id})
