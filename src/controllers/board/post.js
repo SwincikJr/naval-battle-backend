@@ -1,12 +1,13 @@
 const { createBoard,findUserByQuery} = require('../../database/repository/board')
 const { controller } = require('../../presenters/controller')
 const { status } = require('../../presenters/http')
-const { checkmatimeSpace } = require('./rules')
+const { checkmatimeSpace, getBoardInfo } = require('./rules')
 
 
 exports.path = '/board'
 exports.method = 'post'
 exports.middleware = [
+    getBoardInfo,
     checkmatimeSpace
 ]
 exports.authenticate = true
