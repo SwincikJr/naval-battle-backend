@@ -1,6 +1,6 @@
 const fs = require('fs')
 const path = require('path')
-const { validateAuthorization } = require('./jwt')
+const { validateAuthorization, validatePlayerAuthorization, validateAdminAuthorization } = require('./jwt')
 const { controller } = require('./controller')
 
 const parseObject = (list, dir) =>
@@ -15,8 +15,14 @@ const parseObject = (list, dir) =>
 
 const generateRoute = (list, app) =>
   list.map((val) => {
+    
     let args = [`/api${val.path}`]
-    if (val.authenticate) args = args.concat(validateAuthorization)
+    
+    if (val.authenticate || val.admin) args = args.concat(validateAuthorization)
+    
+    if (val.authenticate) args = args.concat(validatePlayerAuthorization)
+    else if (val.admin) args = args.concat(validateAdminAuthorization)
+    
     args = args.concat(val.middleware)
     args.push(controller(val.handler))
     app._router[val.method.toLowerCase()].apply(app._router, args)

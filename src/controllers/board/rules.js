@@ -1,23 +1,23 @@
 const { controller } = require('../../presenters/controller')
 const { status } = require('../../presenters/http')
 const { errorResponse } = require('../../presenters/handle')
-const { findBoardInfo, createBoardInfo } = require('../../database/repository/boardInfo')
+const { findGameByGameId } = require('../../database/repository/game')
 
-exports.getBoardInfo = controller(async(req,res,next)=>{
-    const boardInfo = await findBoardInfo(1)
-    if(!boardInfo){
-        const {_id, playableVessels,columnBoard,rowBoard} = require('../../database/templateVessels.json')
-        req.boardInfo = {_id, playableVessels,columnBoard,rowBoard}
-        await createBoardInfo(_id, playableVessels,columnBoard,rowBoard)
-        return next()
+exports.getGameInfo = controller(async(req, res, next)=>{
+    const game = await findGameByGameId(req.body.gameId || 'classic')
+    if(!game){
+        return res.status(status.BAD_REQUEST).json(errorResponse(
+            'Modalidade de jogo não localizada.',
+            'Nenhuma modalidade de jogo foi encontrada. Por favor, contate o administrador do sistema.'
+        ))
     }
-    req.boardInfo = boardInfo
+    req._gameInfo = game
     return next()
 })
 
-exports.checkmatimeSpace = controller(async(req,res,next)=>{
+exports.checkMaritimeSpace = controller(async (req, res, next)=>{
 
-    const {playableVessels, columnBoard, rowBoard} = req.boardInfo
+    const { playableVessels, columnBoard, rowBoard } = req._gameInfo
 
     const validTotalVesselsAmount = vessels => {
         return vessels.length === totalAmountPerPlayer
@@ -122,7 +122,7 @@ exports.checkmatimeSpace = controller(async(req,res,next)=>{
         'Coordenadas inválidas',
         'Alguma embarcação está em uma coordenada inválida'
     ))
-    req.body.vessels = vessels
+    req._vessels = vessels
     return next()
 })
 

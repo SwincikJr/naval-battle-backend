@@ -1,3 +1,4 @@
+const { param } = require("express-validator");
 const { checkUserInGameOrWaiting, findUserByEmailOrUsername } = require("../../database/repository/user");
 const { controller } = require("../../presenters/controller");
 const { errorResponse } = require("../../presenters/handle");
@@ -24,3 +25,7 @@ exports.checkChallengedExists = controller(async ({ body: { login } }, res, next
     )
     return next()
 })
+
+exports.validateGameIdInParams = [
+    param('id').isString().trim().notEmpty()
+]

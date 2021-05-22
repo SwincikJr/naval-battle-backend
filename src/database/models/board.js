@@ -3,7 +3,7 @@ const { Types } = require("mongoose");
 module.exports = {
     name: 'Board',
     fields: {
-        userId: { 
+        UserId: { 
             type: Types.ObjectId, 
             required: true
         },

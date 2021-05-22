@@ -1,0 +1,13 @@
+module.exports = {
+    name: 'Admin',
+    fields: {
+        username: {
+            type: String,
+            required: true
+        },
+        password: {
+            type: String,
+            required: true
+        }
+    }
+}

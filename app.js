@@ -9,6 +9,9 @@ const path = require('path')
 const { status } = require('./src/presenters/http')
 const language = require('./src/middlewares/language')
 const error = require('./src/middlewares/error')
+const seeder = require('./src/database/seeders')
+
+seeder()
 
 const app = express()
 
