@@ -1,5 +1,5 @@
 const { body } = require('express-validator')
-const { findGameByGameId } = require('../../database/repository/game')
+const { findGameByGameId, findGameById } = require('../../database/repository/game')
 const { controller } = require('../../presenters/controller')
 const { status } = require('../../presenters/http')
 const { errorResponse } = require('../../presenters/handle')
@@ -9,8 +9,11 @@ exports.validateAuthBody = [
     body('password').trim().isString().notEmpty()
 ]
 
+exports.validateGameIdInBody = [
+    body('id').isString().trim().notEmpty()
+]
+
 exports.validateGameBody = [
-    body('id').isString().trim().notEmpty(),
     body('label').isString().trim().notEmpty(),
     body('rowBoard').isInt({ min: 3 }),
     body('columnBoard').isInt({ min: 3 }),
@@ -35,5 +38,28 @@ exports.checkPreviousGameId = controller(async (req, res, next) => {
 })
 
 exports.checkVesselsOnGame = controller(async (req, res, next) => {
-    
+    const vessels = req.body.playableVessels
+    for (const vessel of vessels) {
+        const vesselsById = vessels.filter(v => v.id === vessel.id)
+        if (vesselsById.length > 1) return res.status(status.BAD_REQUEST).json(
+            errorResponse(
+                'ID repetido!',
+                'O ID de uma embarcação deve ser único.'
+            )
+        )
+    }
+    return next()
+})
+
+exports.checkDeleteRules = controller(async (req, res, next) => {
+    const game = await findGameById(req.params._id)
+    if (!game) return res.status(status.NOT_FOUND).json(errorResponse(
+        'Modalidade não encontrada!', 
+        'A Modalidade informada não foi localizada.'
+    ))
+    if (game.id === 'classic') return res.status(status.BAD_REQUEST).json(errorResponse(
+        'Operação não permitida!',
+        'A Modalidade Clássica não pode ser excluída do sistema.'
+    ))
+    return next()
 })
