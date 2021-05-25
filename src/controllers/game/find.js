@@ -23,7 +23,7 @@ exports.handler = controller(async ({ _rt_auth_token: { _id } }, res) => {
         )
     }
     await setUserPlaying(_id)
-    const match = await startMatch(_id, waiting._id)
+    const match = await startMatch(_id, waiting._id, 'classic')
     runEvent('artemisia.startedMatch', { _id: waiting._id, match })
     return res.status(status.OK).json(match)
 })

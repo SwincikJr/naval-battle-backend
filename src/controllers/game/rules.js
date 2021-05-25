@@ -1,4 +1,5 @@
 const { param } = require("express-validator");
+const { findMatchByIdAndUserId } = require("../../database/repository/match");
 const { checkUserInGameOrWaiting, findUserByEmailOrUsername } = require("../../database/repository/user");
 const { controller } = require("../../presenters/controller");
 const { errorResponse } = require("../../presenters/handle");
@@ -29,3 +30,13 @@ exports.checkChallengedExists = controller(async ({ body: { login } }, res, next
 exports.validateGameIdInParams = [
     param('id').isString().trim().notEmpty()
 ]
+
+exports.checkUsersOfMatch = controller(async (req, res, next) => {
+    const match = await findMatchByIdAndUserId(req.params._id, req._rt_auth_token._id)
+    if (!match) return res.status(status.NOT_FOUND).json(errorResponse(
+        'Partida não localizada!',
+        'A Partida solicitada não foi localizada.'
+    ))
+    req._GameId = match.GameId
+    return next()
+})

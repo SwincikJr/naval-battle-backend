@@ -18,7 +18,7 @@ exports.handler = controller(async ({ _rt_auth_token: { _id } }, res) => {
         'Você não possui nenhum desafio pendente.'
     ))
     await setUsersPlayingForChallenge(challenge.ChallengerId, _id)
-    const match = startMatch(challenge.ChallengerId, _id)
+    const match = await startMatch(challenge.ChallengerId, _id, 'classic') // TO DO: Criar partida para modalidades diferentes
     runEvent('artemisia.startedMatch', { _id: challenge.ChallengerId, match })
     return res.status(status.OK).json(match)
 })

@@ -3,7 +3,7 @@ const defaultGame = {
     label: 'Clássico',
     playableVessels: [
         {
-            id: 'aircraft-carrier',
+            id: 'aircraft_carrier',
             label: 'Porta-avião',
             amountPerPlayer: 1,
             map: [
@@ -47,8 +47,8 @@ const defaultGame = {
             ]
         }
     ],
-    columnBoard: 14,
-    rowBoard: 14
+    columnBoard: 15,
+    rowBoard: 15
 }
 
 module.exports = models => {
