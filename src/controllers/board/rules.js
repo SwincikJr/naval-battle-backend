@@ -2,6 +2,8 @@ const { controller } = require('../../presenters/controller')
 const { status } = require('../../presenters/http')
 const { errorResponse } = require('../../presenters/handle')
 const { findGameByGameId } = require('../../database/repository/game')
+const { findMatchByIdAndUserId } = require('../../database/repository/match')
+const { findBoardByQuery } = require('../../database/repository/board')
 
 exports.getGameInfo = controller(async(req, res, next)=>{
     const game = await findGameByGameId(req.body.gameId || 'classic')
@@ -61,7 +63,7 @@ exports.checkMaritimeSpace = controller(async (req, res, next)=>{
     }
     
     const validCoordinatesInsideOfSpace = coordinates => {
-        return coordinates.filter(c => c.row < 0 || c.row > rowBoard || c.column < 0 || c.column > columnBoard).length === 0
+        return coordinates.filter(c => c.row < 0 || c.row > rowBoard - 1 || c.column < 0 || c.column > columnBoard - 1).length === 0
     }
 
     const validNotEqualCoordinates = coordinates => {
@@ -123,6 +125,27 @@ exports.checkMaritimeSpace = controller(async (req, res, next)=>{
         'Alguma embarcação está em uma coordenada inválida'
     ))
     req._vessels = vessels
+    return next()
+})
+
+exports.checkMatch = controller(async (req, res, next) => {
+    const match = await findMatchByIdAndUserId(req.body.MatchId, req._rt_auth_token._id)
+    if (!match) return res.status(status.BAD_REQUEST).json(errorResponse(
+        'Partida não localizada!',
+        'A partida informada não foi localizada.'
+    ))
+    return next()
+})
+
+exports.checkPreviousBoardInMatch = controller(async (req, res, next) => {
+    const board = await findBoardByQuery({
+        MatchId: req.body.MatchId,
+        UserId: req._rt_auth_token._id
+    })
+    if (board) return res.status(status.BAD_REQUEST).json(errorResponse(
+        'Tabuleiro já cadastrado!',
+        'Já existe um tabuleiro cadastrado para a partida informada.'
+    ))
     return next()
 })
 

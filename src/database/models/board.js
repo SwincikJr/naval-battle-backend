@@ -14,6 +14,10 @@ module.exports = {
                     { row: Number, column: Number }
                 ]
             }
-        ]
+        ],
+        MatchId: {
+            type: Types.ObjectId, 
+            required: true
+        }
     }
 }
