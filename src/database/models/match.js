@@ -18,6 +18,10 @@ module.exports = {
         running: {
             type: Boolean,
             required: true
+        },
+        moving: {
+            type: Types.ObjectId,
+            required: true
         }
     }
 }

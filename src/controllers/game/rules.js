@@ -38,5 +38,36 @@ exports.checkUsersOfMatch = controller(async (req, res, next) => {
         'A Partida solicitada não foi localizada.'
     ))
     req._GameId = match.GameId
+    req._Match = match
     return next()
 })
+
+exports.checkUserMoving = controller(async (req, res, next) => {
+    if (req._Match.moving != req._rt_auth_token._id) {
+        return res.status(status.BAD_REQUEST).json(errorResponse(
+            'Não está na sua vez de jogar!',
+            'Aguarde a jogada do seu oponente antes de atacar.'
+        ))
+    }
+    return next()
+})
+
+exports.clearOponentBoard = board => {
+
+    const hasDestroyedCoordinatesOnVessel = vessel => {
+        return vessel.coordinates.find(c => c.destroyed)
+    }
+
+    const getDestroyedCoordinatesOnVessel = vessel => {
+        return vessel.coordinates.filter(c => c.destroyed)
+    }
+
+    board.vessels = board.vessels
+        .filter(v => !!hasDestroyedCoordinatesOnVessel(v))
+        .map(v => {
+            return {
+                coordinates: getDestroyedCoordinatesOnVessel(v)
+            }
+        })
+    return board
+}

@@ -11,13 +11,24 @@ module.exports = {
             {
                 id:String, 
                 coordinates: [
-                    { row: Number, column: Number }
+                    { row: Number, column: Number, destroyed: Boolean }
                 ]
             }
         ],
         MatchId: {
             type: Types.ObjectId, 
             required: true
-        }
+        },
+        rows: {
+            type: Number,
+            required: true
+        },
+        columns: {
+            type: Number,
+            required: true
+        },
+        attackedCoordinates: [
+            { row: Number, column: Number }
+        ]
     }
 }
