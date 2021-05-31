@@ -19,6 +19,14 @@ module.exports = {
             type: Number,
             default: 0
         },
+        coins: {
+            type: Number,
+            default: 0
+        },
+        diamonds: {
+            type: Number,
+            default: 5
+        },
         activation_key: {
             type: String,
             required: true

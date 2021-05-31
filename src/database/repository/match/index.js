@@ -13,3 +13,5 @@ exports.findMatchByIdAndUserId = (_id, UserId) => {
 }
 
 exports.updateUserMovingOfMatch = (_id, UserId) => update('Match', { _id }, { moving: UserId })
+
+exports.endMatch = _id => update('Match', { _id }, { running: false })

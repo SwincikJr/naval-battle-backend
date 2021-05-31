@@ -1,4 +1,5 @@
 const { param } = require("express-validator");
+const { findBoardByQuery } = require("../../database/repository/board");
 const { findMatchByIdAndUserId } = require("../../database/repository/match");
 const { checkUserInGameOrWaiting, findUserByEmailOrUsername } = require("../../database/repository/user");
 const { controller } = require("../../presenters/controller");
@@ -70,4 +71,16 @@ exports.clearOponentBoard = board => {
             }
         })
     return board
+}
+
+exports.calculateLoot = async (MatchId, UserId) => {
+    const board = await findBoardByQuery({ MatchId, UserId })
+    const remainingCoordinates = board.vessels.reduce((acc, curr) => {
+        const coordinates = curr.coordinates.filter(c => !c.destroyed).length
+        return acc + coordinates
+    }, 0)
+    return { 
+        score: remainingCoordinates * 100,
+        coins: remainingCoordinates * 5
+    }
 }
