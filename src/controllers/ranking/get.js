@@ -1,5 +1,6 @@
 const { controller } = require('../../presenters/controller')
 const { status } = require('../../presenters/http')
+const {findByScore, findOneScore} = require('../../database/repository/user')
 
 exports.path = '/ranking'
 exports.method = 'get'
@@ -7,24 +8,8 @@ exports.middleware = []
 exports.authenticate = true
 
 
-exports.handler = controller(async (req, res) => {
-    return res.status(status.OK).json({
-        ranking:[{
-            username: "Chewbacca",
-            score: 1000
-        },
-        {
-            username: "R2D2",
-            score: 800
-        },
-        {
-            username: "C3PO",
-            score: 500
-        }
-        ],
-        myScore:[{
-            username: "PrinceLéia",
-            score: 400
-        }]
-    })
+exports.handler = controller(async ({ _rt_auth_token: {_id} }, res) => {
+    const ranking = await findByScore()
+    const myScore = await findOneScore(_id)
+    return res.status(status.OK).json({ranking,myScore})
 })

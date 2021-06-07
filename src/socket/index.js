@@ -98,7 +98,7 @@ const loadEmitters = (io) => {
 
 exports.listenServerSocket = async (server) => {
   try {
-    await deleteAllSocketClients()
+    // await deleteAllSocketClients()
     const io = socket(server)
     listenEvents(io)
     loadEmitters(io)

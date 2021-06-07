@@ -11,8 +11,16 @@ module.exports = {
             type: Types.ObjectId,
             required: true
         },
+        GameId: {
+            type: String,
+            required: true
+        },
         running: {
             type: Boolean,
+            required: true
+        },
+        moving: {
+            type: Types.ObjectId,
             required: true
         }
     }

@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken')
 const { status } = require('./http')
 const { controller } = require('./controller')
 const { findUserByQuery } = require('../database/repository/user')
+const { findAdminById } = require('../database/repository/admin')
 
 const { TOKEN_SECRET } = process.env
 
@@ -29,12 +30,23 @@ exports.validateAuthorization = controller(async (req, res, next) => {
     if (splitedAuthHeader.length !== 2 || !/^Bearer$/i.test(splitedAuthHeader[0]))
         return res._rt_send_error(status.UNAUTHORIZED, 'AUTH_UNRECOGNIZABLE')
     const validatedToken = await this.validateToken(splitedAuthHeader[1])
-    if (!validatedToken)return res._rt_send_error(status.UNAUTHORIZED, 'INVALID_TOKEN')
-    const{_id} = validatedToken
-    const user = await findUserByQuery({_id})
-    if (user == null)return res._rt_send_error(status.UNAUTHORIZED, 'INVALID_TOKEN')
+    if (!validatedToken) return res._rt_send_error(status.UNAUTHORIZED, 'INVALID_TOKEN')
     req._rt_auth_token = validatedToken
-    return next()  
+    return next() 
+})
+
+exports.validatePlayerAuthorization = controller(async (req, res, next) => {
+    const{ _id } = req._rt_auth_token
+    const user = await findUserByQuery({ _id })
+    if (!user) return res._rt_send_error(status.UNAUTHORIZED, 'INVALID_TOKEN')
+    return next()
+})
+
+exports.validateAdminAuthorization = controller(async (req, res, next) => {
+    const{ _id } = req._rt_auth_token
+    const admin = await findAdminById({ _id })
+    if (!admin) return res._rt_send_error(status.UNAUTHORIZED, 'INVALID_TOKEN')
+    return next()
 })
 
 exports.generateToken = object => {

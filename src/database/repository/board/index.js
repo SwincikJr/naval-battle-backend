@@ -1,7 +1,11 @@
 const { create, findOne, update, findAll } = require('../index')
 
-exports.createBoard = ( vessels, userId ) => {
-    return create('Board', vessels, userId)
+exports.createBoard = (vessels, UserId, MatchId, rows, columns) => {
+    return create('Board', { vessels, UserId, MatchId, rows, columns })
 }
 
-exports.findUserByQuery = query => findOne('Board', { ...query })
+exports.findBoardByQuery = query => findOne('Board', { ...query })
+
+exports.findBoardsOfMatch = MatchId => findAll('Board', { MatchId })
+
+exports.updateBoard = (_id, data) => update('Board', { _id }, data)
