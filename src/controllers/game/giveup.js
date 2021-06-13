@@ -22,7 +22,7 @@ exports.handler = controller(async (req, res) => {
     
     const winner = req._Match.PlayerOneId == req._rt_auth_token._id 
         ? req._Match.PlayerTwoId 
-        : req._rt_auth_token._id
+        : req._Match.PlayerOneId
     
     const { coins, score } = await calculateLoot(
         req.params._id, 
