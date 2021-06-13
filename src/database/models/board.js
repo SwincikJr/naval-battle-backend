@@ -29,6 +29,11 @@ module.exports = {
         },
         attackedCoordinates: [
             { row: Number, column: Number }
-        ]
+        ],
+        rightShot: {
+            type: Number,
+            required: true,
+            default: 3
+        }
     }
 }

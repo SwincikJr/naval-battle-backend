@@ -1,7 +1,7 @@
 const { param } = require("express-validator");
 const { findBoardByQuery } = require("../../database/repository/board");
 const { findMatchByIdAndUserId } = require("../../database/repository/match");
-const { checkUserInGameOrWaiting, findUserByEmailOrUsername } = require("../../database/repository/user");
+const { checkUserInGameOrWaiting, findUserByEmailOrUsername, findUserByQuery } = require("../../database/repository/user");
 const { controller } = require("../../presenters/controller");
 const { errorResponse } = require("../../presenters/handle");
 const { status } = require("../../presenters/http");
@@ -84,3 +84,12 @@ exports.calculateLoot = async (MatchId, UserId) => {
         coins: remainingCoordinates * 5
     }
 }
+
+exports.checkDiamondsOfUser = min => controller(async (req, res, next) => {
+    const user = await findUserByQuery({ _id: req._rt_auth_token._id })
+    if (user && user.diamonds >= min) return next()
+    return res.status(status.BAD_REQUEST).json(errorResponse(
+        'Diamantes insuficientes!',
+        'Você não possui diamantes suficientes para a ação requisitada.'
+    ))
+})

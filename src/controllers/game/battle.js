@@ -1,4 +1,5 @@
 const { findBoardsOfMatch } = require("../../database/repository/board")
+const { findUserByQuery } = require("../../database/repository/user")
 const { controller } = require("../../presenters/controller")
 const { validateIdInParams, errorResponse } = require("../../presenters/handle")
 const { status } = require("../../presenters/http")
@@ -22,11 +23,13 @@ exports.handler = controller(async (req, res) => {
             'As embarcações ainda estão sendo posicionadas.'
         ))
     }
+    const user = await findUserByQuery({ _id: req._rt_auth_token._id })
     const response = {
         match: req._Match,
         yourBoard: boardsOfMatch.find(b => b.UserId == req._rt_auth_token._id),
         opponentBoard: clearOponentBoard(boardsOfMatch.find(b => b.UserId != req._rt_auth_token._id)),
-        moving: req._Match.moving == req._rt_auth_token._id
+        moving: req._Match.moving == req._rt_auth_token._id,
+        diamonds: user.diamonds
     }
     return res.status(status.OK).json(response)
 })
