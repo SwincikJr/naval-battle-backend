@@ -8,6 +8,8 @@ exports.findOne = (model, query) => models[model].findOne(query).exec()
 
 exports.findAll = (model, query) => models[model].find(query).exec()
 
+exports.findNoClassic = (model, query) => models[model].find(query).exec()
+
 exports.remove = (model, query) => models[model].deleteOne(query).exec()
 
 exports.removeMany = (model, query) => models[model].deleteMany(query).exec()
